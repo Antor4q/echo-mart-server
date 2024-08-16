@@ -30,9 +30,14 @@ async function run() {
     const productsCollection =client.db("echoMartDB").collection("products")
 
     app.get("/products", async(req,res)=>{
-        console.log(req.body,"this is body")
-        console.log(req.query,"this is query")
-        const result = await productsCollection.find().toArray()
+       
+      
+        const currentPage = parseInt(req.query.currentPage)
+        const perPageProducts = parseInt(req.query.perPageProducts)
+        const title = req.query.title || ""
+        const query = title ? {productName:{$regex : title, $options : 'i'}} : {}
+       
+        const result = await productsCollection.find(query).skip((currentPage-1) * perPageProducts).limit(perPageProducts).toArray()
         res.send(result)
     })
     
