@@ -36,8 +36,21 @@ async function run() {
         const perPageProducts = parseInt(req.query.perPageProducts)
         const title = req.query.title || ""
         const query = title ? {productName:{$regex : title, $options : 'i'}} : {}
+        const sortBy = req.query.sortProd || ""
        
+      
         const result = await productsCollection.find(query).skip((currentPage-1) * perPageProducts).limit(perPageProducts).toArray()
+
+        if(sortBy === "lowToHigh"){
+          const sorted = result.sort((a,b) => a?.price - b?.price)
+          
+        }
+        else if(sortBy === "highToLow"){
+          const sorted = result.sort((a,b) => b?.price - a?.price)
+        }
+        else if(sortBy === "dateAdded"){
+          result.sort((a,b)=> new Date(b?.productCreationDate) - new Date(a?.productCreationDate))
+        }
         res.send(result)
     })
 
