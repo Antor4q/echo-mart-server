@@ -40,6 +40,12 @@ async function run() {
         const result = await productsCollection.find(query).skip((currentPage-1) * perPageProducts).limit(perPageProducts).toArray()
         res.send(result)
     })
+
+    app.get("/pagination", async(req,res)=>{
+      const result = await productsCollection.find().toArray()
+       res.send(result)
+      
+    })
     
 
     // Send a ping to confirm a successful connection
