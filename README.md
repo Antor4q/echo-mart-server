@@ -2,7 +2,7 @@
 
 Live link: https://echo-mart.web.app
 
-client code:  https://github.com/Antor4q/echo-mart-client
+Client code:  https://github.com/Antor4q/echo-mart-client
 
 This is a full-stack web application built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. 
 The project focuses on implementing essential functionalities such as pagination, searching, categorization, 
