@@ -32,25 +32,47 @@ async function run() {
     app.get("/products", async(req,res)=>{
        
       
+      
+        const title = req.query.title || ""
         const currentPage = parseInt(req.query.currentPage)
         const perPageProducts = parseInt(req.query.perPageProducts)
-        const title = req.query.title || ""
-        const query = title ? {productName:{$regex : title, $options : 'i'}} : {}
-        const sortBy = req.query.sortProd || ""
-       
-      
-        const result = await productsCollection.find(query).skip((currentPage-1) * perPageProducts).limit(perPageProducts).toArray()
+        const sort = req.query.sortProd || ""
+        const {p,cat,br} = req.query  
 
-        if(sortBy === "lowToHigh"){
-          const sorted = result.sort((a,b) => a?.price - b?.price)
-          
+        const query = {}
+
+        if(title){
+          query.productName =  {$regex : title, $options : 'i'}
         }
-        else if(sortBy === "highToLow"){
-          const sorted = result.sort((a,b) => b?.price - a?.price)
+
+        if (p) {
+        
+          query.price = { $gte: 500, $lte: parseInt(p) };
         }
-        else if(sortBy === "dateAdded"){
-          result.sort((a,b)=> new Date(b?.productCreationDate) - new Date(a?.productCreationDate))
+      
+        if (br) {
+          query.brandName = { $regex: br, $options: 'i' };
         }
+      
+        if (cat) {
+          query.category = cat;
+        }
+       
+        let sortPrice = {}
+        if(sort === "lowToHigh"){
+          sortPrice.price = 1
+        }
+        else if(sort === "highToLow"){
+          sortPrice.price = -1
+        }
+        else if(sort === "dateAdded"){
+          sortPrice.productCreationDate = -1
+        }
+      
+        const result = await productsCollection.find(query).sort(sortPrice).skip((currentPage-1)*perPageProducts).limit(perPageProducts).toArray()
+
+     
+        
         res.send(result)
     })
 
