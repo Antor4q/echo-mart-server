@@ -13,7 +13,7 @@ app.use(express.json())
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.i8hseoh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+   
     await client.connect();
 
     const productsCollection =client.db("echoMartDB").collection("products")
@@ -68,12 +68,8 @@ async function run() {
         else if(sort === "dateAdded"){
           sortPrice.productCreationDate = -1
         }
-      
-        const result = await productsCollection.find(query).sort(sortPrice).skip((currentPage-1)*perPageProducts).limit(perPageProducts).toArray()
-
-     
-        
-        res.send(result)
+      const result = await productsCollection.find(query).sort(sortPrice).skip((currentPage-1)*perPageProducts).limit(perPageProducts).toArray()
+      res.send(result)
     })
 
     app.get("/pagination", async(req,res)=>{
@@ -83,7 +79,7 @@ async function run() {
     })
     
 
-    // Send a ping to confirm a successful connection
+   
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
